@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What's my soda?</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            color: #3366cc;
+        }
+
+        form {
+            margin: 20px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3366cc;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        h2 {
+            color: #3366cc;
+            margin-top: 20px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .correct {
+            color: #28a745;
+        }
+
+        .incorrect {
+            color: #dc3545;
+        }
+
+        .prediction-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .image-container {
+            width: 70%;
+            margin-bottom: 10px;
+        }
+
+        .probabilities-container {
+            width: 70%;
+            text-align: center;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .probabilities-container p {
+            margin: 5px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>What's my soda?</h1>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" multiple>
+        <input type="text" name="label" placeholder="Enter labels for the image">
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if predictions_list %}
+        {% for predictions in predictions_list %}
+            <div class="prediction-container">
+                <h2 class="{{ predictions['correctness'] }}">{{ predictions['predicted_class'] }}</h2>
+                <div class="image-container">
+                    <img src="data:image/jpeg;base64,{{ predictions['image'] }}" alt="Uploaded Image">
+                </div>
+                <div class="probabilities-container">
+                    <p><strong>Predicted probabilities:</strong></p>
+                    {{ predictions['probabilities'] | safe }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>
